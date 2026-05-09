@@ -1,97 +1,129 @@
 # bpmn2visio
 
-BPMN 2.0 ファイル（`.bpmn`）を Microsoft Visio の `.vsdx` に自動変換するツールです。
-Visio COM オートメーション（pywin32）とレーン数別テンプレート方式を採用し、
-正規の BPMN ステンシルマスター（タスク・ゲートウェイ・イベント等）と GlueTo コネクタを使用します。
+A tool to automatically convert BPMN 2.0 files (`.bpmn`) to Microsoft Visio diagrams (`.vsdx`).
+It uses Visio COM automation (pywin32) with a lane-count-based template approach, placing shapes using genuine BPMN stencil masters (Task, Gateway, Event, etc.) and GlueTo connectors.
 
-なお､スイムレーンを動的に生成することはできませんので､生成後に移動や分離やサイズの変更を Visio の画面上で実施してください｡
+> **Note:** Swim lanes cannot be generated dynamically. After conversion, please manually resize, move, or split lanes in Visio as needed.
 
-## 特徴
+**日本語版:** [README.ja.md](README.ja.md)
 
-- 正規の Visio BPMN マスター図形を使用（タスク・開始/終了イベント・ゲートウェイ等）
-- GlueTo による動的コネクタ（図形移動後も接続維持）
-- Visio GUARD() 問題を回避するテンプレート方式（A3 横固定）
-- 2〜5 レーンに対応（`templates/lane2.vstx` ～ `lane5.vstx`）
-- BPMN レーン座標に基づく図形の自動配置
+## Features
 
-## 動作環境
+- Uses genuine Visio BPMN master shapes (Task, Start/End Event, Gateway, etc.)
+- Dynamic connectors via GlueTo (connectors follow shapes when moved)
+- Template-based approach to bypass the Visio GUARD() lock issue (fixed A3 landscape)
+- Supports 2–5 lanes (`templates/lane2.vstx` through `lane5.vstx`)
+- Automatic shape placement based on BPMN lane coordinates
+
+## Requirements
 
 - Windows 10/11
-- Microsoft Visio 2019 以降（デスクトップ版）
-- Python 3.8 以降
-- pywin32：`pip install pywin32`
+- Microsoft Visio 2019 or later (desktop version)
+- Python 3.8 or later
+- pywin32: `pip install pywin32`
 
-## ファイル構成
+## File Structure
 
 ```
 bpmn2visio/
-├── bpmn2visio.py          # メイン変換スクリプト（BPMN パーサー含む）
-├── sample.bpmn             # サンプル BPMN（3 レーン・受注処理プロセス）
-├── templates/              # レーン数別 Visio テンプレート（手動作成が必要）
+├── bpmn2visio.py          # Main conversion script (includes BPMN parser)
+├── sample.bpmn             # Sample BPMN (3-lane order processing process)
+├── templates/              # Per-lane-count Visio templates (manual creation required)
 │   ├── lane2.vstx
 │   ├── lane3.vstx
 │   ├── lane4.vstx
 │   └── lane5.vstx
 ├── README.md
-├── SPEC.md
-├── DESIGN.md
-└── Runbook.md
+└── README.ja.md
 ```
 
-> **注意**：`templates/` フォルダ内の `.vstx` ファイルはバイナリのため Git 管理外です。
-> 初回セットアップ時は Runbook.md の手順に従って手動作成してください。
+> **Note:** `.vstx` files in `templates/` are binary and should not be committed to Git.
+> See "Preparing Templates" below for manual creation steps.
 
-## クイックスタート
+## Quick Start
 
-### 1. pywin32 のインストール
+### 1. Install pywin32
 
 ```
 pip install pywin32
 ```
 
-### 2. テンプレートの準備
+### 2. Prepare templates
 
-`templates/` フォルダに `lane3.vstx` 等を作成します（詳細は [Runbook.md](Runbook.md)）。
+Visio template files (`.vstx`) must be created manually in the Visio UI, once per lane count. See [Preparing Templates](#preparing-templates) below.
 
-### 3. 変換の実行
+### 3. Run the conversion
 
 ```
 python bpmn2visio.py sample.bpmn
 ```
 
-出力：`sample_com.vsdx`（入力ファイルと同じフォルダ）
+Output: `sample_com.vsdx` in the same folder as the input file.
 
-### 4. 複数ファイルの一括変換
+### 4. Batch convert multiple files
 
 ```
 for %f in (*.bpmn) do python bpmn2visio.py %f
 ```
 
-## 対応 BPMN 要素
+## Supported BPMN Elements
 
-| BPMN 要素 | Visio マスター |
-|-----------|--------------|
-| startEvent | 開始イベント |
-| endEvent | 終了イベント |
-| userTask / task | タスク |
-| exclusiveGateway | ゲートウェイ（XOR） |
-| parallelGateway | ゲートウェイ（AND） |
-| inclusiveGateway | ゲートウェイ（OR） |
-| subProcess | 展開されたサブプロセス |
-| intermediateCatchEvent | 中間イベント |
-| sequenceFlow | シーケンス フロー |
+| BPMN Element | Visio Master |
+|---|---|
+| startEvent | 開始イベント / Start Event |
+| endEvent | 終了イベント / End Event |
+| userTask / task | タスク / Task |
+| exclusiveGateway | ゲートウェイ / Gateway (XOR) |
+| parallelGateway | ゲートウェイ / Gateway (AND) |
+| inclusiveGateway | ゲートウェイ / Gateway (OR) |
+| subProcess | 展開されたサブプロセス / Sub-Process |
+| intermediateCatchEvent | 中間イベント / Intermediate Event |
+| sequenceFlow | シーケンス フロー / Sequence Flow |
 
-詳細は [SPEC.md](SPEC.md) を参照してください。
+## Preparing Templates
 
-## トラブルシューティング
+Each template is a standard Visio BPMN file saved as `.vstx`. Create one file per lane count you need.
 
-**「テンプレートが見つかりません」エラー**
-→ `templates/lane{N}.vstx` が未作成です。Runbook.md を参照して作成してください。
+1. Open Visio → **File > New > BPMN Diagram**
+2. Set page size to A3 landscape: **Design > Page Setup > Paper size: A3 / Orientation: Landscape**
+3. Drop a **Pool/Lane** master from the BPMN stencil panel onto the canvas
+4. Right-click the Swimlane List and select **Add Lane** until you have the desired number of lanes
+5. Expand the pool to fill the page (this cannot be done via COM due to the GUARD() constraint)
+6. Save as **File > Save As > Visio Template (*.vstx)** → `templates/lane3.vstx`
+7. Repeat for each lane count you need (`lane2.vstx`, `lane4.vstx`, `lane5.vstx`, …)
 
-**「BPMN ステンシルが見つかりません」エラー**
-→ Visio に BPMN テンプレートを先に開いてください（ファイル > 新規 > BPMN 図）。
+If no exact match is found, the script will automatically use the closest available template.
 
-**マスターが見つからない警告**
-→ 日本語版 Visio のマスター名が異なる場合は、`bpmn2visio.py` の `MASTER_CANDIDATES` を更新してください。
+## Troubleshooting
 
-詳細は [Runbook.md](Runbook.md) を参照してください。
+**"Template directory not found" error**
+→ Create the `templates/` folder next to `bpmn2visio.py` and add the required `.vstx` files.
+
+**"BPMN stencil not found" error**
+→ Open a BPMN diagram template in Visio first (File > New > BPMN Diagram), then run the script. The script connects to the running Visio instance and searches for the stencil there.
+
+**"Master not found" warning**
+→ Master shape names differ between Visio language versions. To check available names, run this macro in Visio (Alt+F11 → Insert Module → Run):
+```vba
+Sub ListMasters()
+    Dim msg As String, oD As Visio.Document, oM As Visio.Master
+    For Each oD In Application.Documents
+        If oD.Type = visTypeStencil Then
+            For Each oM In oD.Masters : msg = msg & oM.Name & Chr(13) : Next
+        End If
+    Next
+    MsgBox msg
+End Sub
+```
+Then update `MASTER_CANDIDATES` in `bpmn2visio.py` to match.
+
+**Lane count mismatch warning**
+→ Create a template matching the exact lane count of your BPMN file (`templates/lane{N}.vstx`).
+
+## How It Works
+
+bpmn2visio avoids the Visio GUARD() constraint — which prevents COM automation from resizing BPMN Pool/Lane shapes — by opening a pre-built `.vstx` template that already contains the correct pool/lane structure. The script reads lane geometry from the template, maps BPMN element positions to Visio coordinates using lane-relative scaling, and connects shapes using `GlueTo` for live connector routing.
+
+## License
+
+MIT
