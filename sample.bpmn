@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             id="Definitions_1"
+             targetNamespace="http://bpmn.io/schema/bpmn">
+
+  <!-- ===== Collaboration ===== -->
+  <collaboration id="Collab_1">
+    <participant id="Pool_1" name="受注処理プロセス" processRef="Process_1"/>
+  </collaboration>
+
+  <!-- ===== Process ===== -->
+  <process id="Process_1" isExecutable="false">
+
+    <laneSet id="LaneSet_1">
+      <lane id="Lane_Customer" name="顧客">
+        <flowNodeRef>Start_1</flowNodeRef>
+        <flowNodeRef>Task_Order</flowNodeRef>
+        <flowNodeRef>Task_Confirm</flowNodeRef>
+        <flowNodeRef>End_1</flowNodeRef>
+      </lane>
+      <lane id="Lane_Reception" name="受付">
+        <flowNodeRef>Task_Receive</flowNodeRef>
+        <flowNodeRef>GW_Check</flowNodeRef>
+        <flowNodeRef>Task_Reject</flowNodeRef>
+        <flowNodeRef>Task_Register</flowNodeRef>
+      </lane>
+      <lane id="Lane_Fulfillment" name="処理部門">
+        <flowNodeRef>Task_Pick</flowNodeRef>
+        <flowNodeRef>Task_Ship</flowNodeRef>
+        <flowNodeRef>Task_Notify</flowNodeRef>
+      </lane>
+    </laneSet>
+
+    <!-- 顧客レーン -->
+    <startEvent id="Start_1" name="注文開始"/>
+    <userTask   id="Task_Order"   name="注文フォーム入力"/>
+    <userTask   id="Task_Confirm" name="配送確認"/>
+    <endEvent   id="End_1"        name="注文完了"/>
+
+    <!-- 受付レーン -->
+    <userTask          id="Task_Receive"  name="注文受付"/>
+    <exclusiveGateway  id="GW_Check"      name="在庫確認"/>
+    <userTask          id="Task_Reject"   name="在庫不足通知"/>
+    <userTask          id="Task_Register" name="注文登録"/>
+
+    <!-- 処理部門レーン -->
+    <userTask id="Task_Pick"   name="ピッキング"/>
+    <userTask id="Task_Ship"   name="出荷処理"/>
+    <userTask id="Task_Notify" name="出荷通知"/>
+
+    <!-- シーケンスフロー -->
+    <sequenceFlow id="SF_01" sourceRef="Start_1"      targetRef="Task_Order"/>
+    <sequenceFlow id="SF_02" sourceRef="Task_Order"   targetRef="Task_Receive"/>
+    <sequenceFlow id="SF_03" sourceRef="Task_Receive" targetRef="GW_Check"/>
+    <sequenceFlow id="SF_04" sourceRef="GW_Check"     targetRef="Task_Reject"   name="在庫なし"/>
+    <sequenceFlow id="SF_05" sourceRef="GW_Check"     targetRef="Task_Register" name="在庫あり"/>
+    <sequenceFlow id="SF_06" sourceRef="Task_Register" targetRef="Task_Pick"/>
+    <sequenceFlow id="SF_07" sourceRef="Task_Pick"    targetRef="Task_Ship"/>
+    <sequenceFlow id="SF_08" sourceRef="Task_Ship"    targetRef="Task_Notify"/>
+    <sequenceFlow id="SF_09" sourceRef="Task_Notify"  targetRef="Task_Confirm"/>
+    <sequenceFlow id="SF_10" sourceRef="Task_Confirm" targetRef="End_1"/>
+
+  </process>
+
+  <!-- ===== Diagram layout (BPMNDI) ===== -->
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collab_1">
+
+      <!-- Pool -->
+      <bpmndi:BPMNShape id="Shape_Pool_1" bpmnElement="Pool_1" isHorizontal="true">
+        <dc:Bounds x="120" y="60" width="1440" height="570"/>
+      </bpmndi:BPMNShape>
+
+      <!-- Lane: 顧客 -->
+      <bpmndi:BPMNShape id="Shape_Lane_Customer" bpmnElement="Lane_Customer" isHorizontal="true">
+        <dc:Bounds x="150" y="60" width="1410" height="190"/>
+      </bpmndi:BPMNShape>
+
+      <!-- Lane: 受付 -->
+      <bpmndi:BPMNShape id="Shape_Lane_Reception" bpmnElement="Lane_Reception" isHorizontal="true">
+        <dc:Bounds x="150" y="250" width="1410" height="190"/>
+      </bpmndi:BPMNShape>
+
+      <!-- Lane: 処理部門 -->
+      <bpmndi:BPMNShape id="Shape_Lane_Fulfillment" bpmnElement="Lane_Fulfillment" isHorizontal="true">
+        <dc:Bounds x="150" y="440" width="1410" height="190"/>
+      </bpmndi:BPMNShape>
+
+      <!-- 顧客レーン 図形 -->
+      <bpmndi:BPMNShape id="Shape_Start_1" bpmnElement="Start_1">
+        <dc:Bounds x="220" y="137" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Order" bpmnElement="Task_Order">
+        <dc:Bounds x="320" y="115" width="120" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Confirm" bpmnElement="Task_Confirm">
+        <dc:Bounds x="1160" y="115" width="120" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_1" bpmnElement="End_1">
+        <dc:Bounds x="1360" y="137" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+
+      <!-- 受付レーン 図形 -->
+      <bpmndi:BPMNShape id="Shape_Task_Receive" bpmnElement="Task_Receive">
+        <dc:Bounds x="510" y="305" width="120" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Check" bpmnElement="GW_Check" isMarkerVisible="true">
+        <dc:Bounds x="690" y="320" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Reject" bpmnElement="Task_Reject">
+        <dc:Bounds x="690" y="220" width="120" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Register" bpmnElement="Task_Register">
+        <dc:Bounds x="810" y="305" width="120" height="80"/>
+      </bpmndi:BPMNShape>
+
+      <!-- 処理部門レーン 図形 -->
+      <bpmndi:BPMNShape id="Shape_Task_Pick" bpmnElement="Task_Pick">
+        <dc:Bounds x="960" y="495" width="120" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Ship" bpmnElement="Task_Ship">
+        <dc:Bounds x="1110" y="495" width="120" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Notify" bpmnElement="Task_Notify">
+        <dc:Bounds x="1260" y="495" width="120" height="80"/>
+      </bpmndi:BPMNShape>
+
+      <!-- エッジ -->
+      <bpmndi:BPMNEdge id="Edge_SF_01" bpmnElement="SF_01">
+        <di:waypoint x="256" y="155"/>
+        <di:waypoint x="320" y="155"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_SF_02" bpmnElement="SF_02">
+        <di:waypoint x="380" y="195"/>
+        <di:waypoint x="380" y="345"/>
+        <di:waypoint x="510" y="345"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_SF_03" bpmnElement="SF_03">
+        <di:waypoint x="630" y="345"/>
+        <di:waypoint x="690" y="345"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_SF_04" bpmnElement="SF_04">
+        <di:waypoint x="715" y="320"/>
+        <di:waypoint x="715" y="300"/>
+        <di:waypoint x="750" y="300"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="720" y="308" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_SF_05" bpmnElement="SF_05">
+        <di:waypoint x="740" y="345"/>
+        <di:waypoint x="810" y="345"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="748" y="326" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_SF_06" bpmnElement="SF_06">
+        <di:waypoint x="930" y="345"/>
+        <di:waypoint x="1020" y="345"/>
+        <di:waypoint x="1020" y="495"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_SF_07" bpmnElement="SF_07">
+        <di:waypoint x="1080" y="535"/>
+        <di:waypoint x="1110" y="535"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_SF_08" bpmnElement="SF_08">
+        <di:waypoint x="1230" y="535"/>
+        <di:waypoint x="1260" y="535"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_SF_09" bpmnElement="SF_09">
+        <di:waypoint x="1320" y="495"/>
+        <di:waypoint x="1320" y="195"/>
+        <di:waypoint x="1220" y="195"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_SF_10" bpmnElement="SF_10">
+        <di:waypoint x="1280" y="155"/>
+        <di:waypoint x="1360" y="155"/>
+      </bpmndi:BPMNEdge>
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>
