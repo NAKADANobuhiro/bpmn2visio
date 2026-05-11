@@ -33,6 +33,7 @@ bpmn2visio/
 │   ├── lane3.vstx
 │   ├── lane4.vstx
 │   └── lane5.vstx
+├── bpmn2visio.bat         # Drag-and-drop launcher for File Explorer
 ├── README.md
 └── README.ja.md
 ```
@@ -60,7 +61,13 @@ python bpmn2visio.py sample.bpmn
 
 Output: `sample_com.vsdx` in the same folder as the input file.
 
-### 4. Batch convert multiple files
+### 4. Drag and drop in File Explorer
+
+Drag a `.bpmn` file from Windows File Explorer and drop it onto **`bpmn2visio.bat`**.
+The converted `.vsdx` will be created in the same folder as the `.bpmn` file.
+A console window stays open after conversion so you can read the result.
+
+### 5. Batch convert multiple files
 
 ```
 for %f in (*.bpmn) do python bpmn2visio.py %f

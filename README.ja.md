@@ -34,6 +34,7 @@ bpmn2visio/
 │   ├── lane3.vstx
 │   ├── lane4.vstx
 │   └── lane5.vstx
+├── bpmn2visio.bat         # エクスプローラー用ドラッグ＆ドロップランチャー
 ├── README.md
 └── README.ja.md
 ```
@@ -62,7 +63,13 @@ python bpmn2visio.py sample.bpmn
 
 出力：`sample_com.vsdx`（入力ファイルと同じフォルダ）
 
-### 4. 複数ファイルの一括変換
+### 4. エクスプローラーからドロップして変換
+
+Windows エクスプローラーで `.bpmn` ファイルを **`bpmn2visio.bat`** にドラッグ＆ドロップします。
+変換結果の `.vsdx` は `.bpmn` ファイルと同じフォルダに生成されます。
+変換後もコンソールウィンドウが開いたままになるため、ログを確認できます。
+
+### 5. 複数ファイルの一括変換
 
 ```
 for %f in (*.bpmn) do python bpmn2visio.py %f
