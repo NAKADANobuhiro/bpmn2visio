@@ -19,7 +19,7 @@ Visio COM オートメーション（pywin32）とレーン数別テンプレー
 ## 動作環境
 
 - Windows 10/11
-- Microsoft Visio 2019 以降（デスクトップ版）
+- Microsoft Visio Plan2 2019 以降（デスクトップ版）
 - Python 3.8 以降
 - pywin32：`pip install pywin32`
 
