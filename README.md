@@ -133,9 +133,8 @@ bpmn2visio avoids the Visio GUARD() constraint — which prevents COM automation
 
 ## Related Projects
 
-- https://github.com/NAKADANobuhiro/markdown2bpmn
-    A tool to author BPMN in Markdown format and generate `.bpmn` files.
-
+- [markdown2bpmn](https://github.com/NAKADANobuhiro/markdown2bpmn) : A tool for writing BPMN in Markdown format and generating `.bpmn` files.
+   
 ## License
 
 MIT
