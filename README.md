@@ -18,7 +18,7 @@ It uses Visio COM automation (pywin32) with a lane-count-based template approach
 ## Requirements
 
 - Windows 10/11
-- Microsoft Visio 2019 or later (desktop version)
+- Microsoft Visio Plan2 2019 or later (desktop version)
 - Python 3.8 or later
 - pywin32: `pip install pywin32`
 
