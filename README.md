@@ -131,6 +131,11 @@ Then update `MASTER_CANDIDATES` in `bpmn2visio.py` to match.
 
 bpmn2visio avoids the Visio GUARD() constraint — which prevents COM automation from resizing BPMN Pool/Lane shapes — by opening a pre-built `.vstx` template that already contains the correct pool/lane structure. The script reads lane geometry from the template, maps BPMN element positions to Visio coordinates using lane-relative scaling, and connects shapes using `GlueTo` for live connector routing.
 
+## Related Projects
+
+- https://github.com/NAKADANobuhiro/markdown2bpmn
+    A tool to author BPMN in Markdown format and generate `.bpmn` files.
+
 ## License
 
 MIT

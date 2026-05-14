@@ -133,6 +133,11 @@ End Sub
 
 bpmn2visio は、COM から BPMN Pool/Lane 図形のサイズを変更できない Visio の GUARD() 制約を回避するため、正しいプール/レーン構造をあらかじめ持つ `.vstx` テンプレートを開く方式を採用しています。スクリプトはテンプレートからレーンの座標を読み取り、BPMN 要素の位置をレーン相対スケーリングで Visio 座標に変換し、`GlueTo` を使って動的コネクタで図形を接続します。
 
+## 関連プロジェクト
+
+- https://github.com/NAKADANobuhiro/markdown2bpmn 
+    Markdown 形式で BPMN を記述し、`.bpmn` ファイルを生成するツールです。
+
 ## ライセンス
 
 MIT
